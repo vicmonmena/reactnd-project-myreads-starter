@@ -1,24 +1,22 @@
 import React, { Component } from 'react'
-// import * as BooksAPI from './BooksAPI'
+import { Route, Switch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import _ from 'lodash';
 import './App.css'
 import * as BooksAPI from './utils/BooksAPI';
 import List from './components/List';
-import _ from 'lodash';
+import Search from './components/Search';
+import NotFound from './components/NotFound.js';
+
 class BooksApp extends Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false,
     currentlyReadingList: [],
     wantToReadList: [],
     readList: []
   }
 
   componentDidMount() {
+    // Load books list when component is mounted
     BooksAPI.getAll().then((books) => {
       console.log(books);
       const booksByShelf = _.groupBy(books, 'shelf');
@@ -32,68 +30,62 @@ class BooksApp extends Component {
   }
 
   render() {
-    const { currentlyReadingList, wantToReadList, readList, showSearchPage } = this.state;
+    const { currentlyReadingList, wantToReadList, readList } = this.state;
     return (
       <div className="app">
-        {showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
-              <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input type="text" placeholder="Search by title or author"/>
-
+        {/*
+          Switch component allows me to catch non matches routes and shows NotFound page.
+          (from https://tylermcginnis.com/react-router-handling-404-pages/)
+        */}
+        <Switch>
+          <Route exact path='/' render={() => (
+            <div className="list-books">
+              <div className="list-books-title">
+                <h1>MyReads</h1>
+              </div>
+              {/* 
+                *******************************************
+                JSX comment: Main layout for all list books
+                    className="list-books-content"
+                ******************************************* 
+              */}
+              <div className="list-books-content">
+                <div>
+                  {/* 
+                    *******************************************
+                    JSX comment: Currently Reading list books
+                    ******************************************* 
+                  */}
+                  <List title="Currently Reading" items={currentlyReadingList}/>
+                  {/* 
+                    *******************************************
+                    JSX comment: Want to Read list books
+                    ******************************************* 
+                  */}
+                  <List title="Want to Read" items={wantToReadList}/>
+                  {/* 
+                    *******************************************
+                    JSX comment: Read list books
+                    ******************************************* 
+                  */}
+                  <List title="Read" items={readList}/>
+                </div>
+              </div>
+              <div className="open-search">
+                <Link to='/search' >Add a book</Link>
               </div>
             </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-          </div>
-        ) : (
-          <div className="list-books">
-            <div className="list-books-title">
-              <h1>MyReads</h1>
-            </div>
-            {/* 
-              *******************************************
-              JSX comment: Main layout for all list books
-                  className="list-books-content"
-              ******************************************* 
-            */}
-            <div className="list-books-content">
-              <div>
-                {/* 
-                  *******************************************
-                  JSX comment: Currently Reading list books
-                  ******************************************* 
-                */}
-                <List title="Currently Reading" items={currentlyReadingList}/>
-                {/* 
-                  *******************************************
-                  JSX comment: Want to Read list books
-                  ******************************************* 
-                */}
-                <List title="Want to Read" items={wantToReadList}/>
-                {/* 
-                  *******************************************
-                  JSX comment: Read list books
-                  ******************************************* 
-                */}
-                <List title="Read" items={readList}/>
-              </div>
-            </div>
-            <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
-            </div>
-          </div>
-        )}
+          )} />
+          {/* 
+            *******************************************
+            JSX comment: Route to load Search component
+            ******************************************* 
+          */}
+          <Route path='/search' render={({ history }) => (
+            <Search placeholder="Search by title or author" />
+          )} />
+          <Route component={NotFound} />
+        </Switch>
       </div>
     )
   }

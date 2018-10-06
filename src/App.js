@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import './App.css'
-import * as BooksAPI from './utils/BooksAPI';
+import { getAll } from './utils/BooksAPI';
 import List from './components/List';
 import Search from './containers/Search';
 import NotFound from './components/NotFound.js';
@@ -17,7 +17,7 @@ class BooksApp extends Component {
 
   componentDidMount() {
     // Load books list when component is mounted
-    BooksAPI.getAll().then((books) => {
+    getAll().then((books) => {
       console.log(books);
       const booksByShelf = _.groupBy(books, 'shelf');
       console.log(booksByShelf);
@@ -27,6 +27,11 @@ class BooksApp extends Component {
         readList: booksByShelf["read"]
       })
     });
+  }
+
+  shouldComponentUpdate() {
+    console.log('re-rendering lists')
+    return true;
   }
 
   render() {

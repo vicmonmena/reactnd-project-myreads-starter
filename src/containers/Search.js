@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import SearchForm from './../components/SearchForm';
 import List from './../components/List'
-import * as BooksAPI from './../utils/BooksAPI';
+import { search } from './../utils/BooksAPI';
 
 class Search extends Component {
 
@@ -25,13 +24,22 @@ class Search extends Component {
     event.preventDefault();
     const query = this.input.value;
 
-    BooksAPI.search(query).then((books)=> {
-      console.log(books);
-      this.setState({
-        query: query,
-        booksFound: books
-      })
-    })
+    search(query).then((books)=> {
+      if ((books.error)) {
+        // TODO: show this message in a modal
+        console.log('An error occurred searching for: ' + query)
+        this.setState({
+          query: query,
+          booksFound: books
+        })
+      } else {
+        console.log(books);
+        this.setState({
+          query: query,
+          booksFound: books
+        })
+      }
+    });
   }
 
   render() {

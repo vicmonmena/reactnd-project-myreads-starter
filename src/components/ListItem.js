@@ -16,7 +16,7 @@ const ListItem = props => {
     <div className="book">
       <div className="book-top">
         <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${cover})` }}></div>
-        <BookSelector />
+        <BookSelector book={props.data} />
       </div>
       <div className="book-title">{title || 'No title'}</div>
       {

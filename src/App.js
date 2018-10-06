@@ -5,7 +5,7 @@ import _ from 'lodash';
 import './App.css'
 import * as BooksAPI from './utils/BooksAPI';
 import List from './components/List';
-import Search from './components/Search';
+import Search from './containers/Search';
 import NotFound from './components/NotFound.js';
 
 class BooksApp extends Component {
@@ -82,7 +82,7 @@ class BooksApp extends Component {
             ******************************************* 
           */}
           <Route path='/search' render={({ history }) => (
-            <Search placeholder="Search by title or author" />
+            <Search handleSubmit={this.handleSearchSubmit}/>
           )} />
           <Route component={NotFound} />
         </Switch>

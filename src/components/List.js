@@ -18,7 +18,7 @@ const List = props => {
       <div className="bookshelf-books">
         <ol className="books-grid">
         {
-          items.length > 0 &&
+          (items) && items.length > 0 &&
           items.map(item => (
             <li key={'book-' + item.id}>
               <ListItem data={item}/>
@@ -26,9 +26,8 @@ const List = props => {
           ))
         }
         {
-          items.length === 0 &&
+          (!(items) || items.length === 0) &&
           <span className="book-info-not-found">No books found!</span>
-          
         }
         </ol>
       </div>

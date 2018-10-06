@@ -1,4 +1,8 @@
 {
+  "author": {
+    "name": "Vicente Montaño Mena",
+    "email": "vicente.montanomena@telefonica.com"
+  },
   "dependencies": {
     "form-serialize": "^0.7.2",
     "lodash": "^4.17.11",

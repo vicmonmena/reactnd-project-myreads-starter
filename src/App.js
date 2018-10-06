@@ -3,39 +3,60 @@ import { Route, Switch } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import './App.css'
-import { getAll } from './utils/BooksAPI';
+import { getAll, update } from './utils/BooksAPI';
 import List from './components/List';
 import Search from './containers/Search';
 import NotFound from './components/NotFound.js';
 
 class BooksApp extends Component {
   state = {
-    currentlyReadingList: [],
-    wantToReadList: [],
-    readList: []
+    currentlyReading: [],
+    wantToRead: [],
+    read: [],
   }
 
   componentDidMount() {
     // Load books list when component is mounted
     getAll().then((books) => {
-      console.log(books);
+      // console.log(books);
       const booksByShelf = _.groupBy(books, 'shelf');
-      console.log(booksByShelf);
+      // console.log(booksByShelf);
       this.setState({
-        currentlyReadingList: booksByShelf["currentlyReading"],
-        wantToReadList: booksByShelf["wantToRead"],
-        readList: booksByShelf["read"]
+        currentlyReading: booksByShelf["currentlyReading"],
+        wantToRead: booksByShelf["wantToRead"],
+        read: booksByShelf["read"],
       })
     });
   }
 
-  shouldComponentUpdate() {
-    console.log('re-rendering lists')
-    return true;
+  handleMoveItem = (data) => {
+
+    const { book, fromShelf, toShelf } = data;
+    update(book, toShelf).then((res) => {
+
+      if (toShelf !== 'none' && fromShelf !== 'none') {
+        // (* -> *) POP and PUSH book from/to corresponding list
+        this.setState({
+          [fromShelf]: this.state[fromShelf].filter(item => item.id !== book.id),
+          [toShelf]: this.state[toShelf].concat([book])
+        })
+      } else if (fromShelf === 'none' && toShelf !== 'none') {  
+        // (none -> *) Just PUSH book to corresponding list
+        this.setState({
+          [toShelf]: this.state[toShelf].concat([book])
+        })
+      } else {  
+        // (* -> none) Just POP book from corresponding list
+        this.setState({
+          [fromShelf]: this.state[fromShelf].filter(item => item.id !== book.id),
+        })
+      }
+      // ¿none -> none?
+    })
   }
 
   render() {
-    const { currentlyReadingList, wantToReadList, readList } = this.state;
+    const { currentlyReading, wantToRead, read } = this.state;
     return (
       <div className="app">
         {/*
@@ -61,19 +82,19 @@ class BooksApp extends Component {
                     JSX comment: Currently Reading list books
                     ******************************************* 
                   */}
-                  <List title="Currently Reading" items={currentlyReadingList}/>
+                  <List title="Currently Reading" items={currentlyReading} handleChange={this.handleMoveItem}/>
                   {/* 
                     *******************************************
                     JSX comment: Want to Read list books
                     ******************************************* 
                   */}
-                  <List title="Want to Read" items={wantToReadList}/>
+                  <List title="Want to Read" items={wantToRead} handleChange={this.handleMoveItem}/>
                   {/* 
                     *******************************************
                     JSX comment: Read list books
                     ******************************************* 
                   */}
-                  <List title="Read" items={readList}/>
+                  <List title="Read" items={read} handleChange={this.handleMoveItem}/>
                 </div>
               </div>
               <div className="open-search">
@@ -87,7 +108,7 @@ class BooksApp extends Component {
             ******************************************* 
           */}
           <Route path='/search' render={({ history }) => (
-            <Search handleSubmit={this.handleSearchSubmit}/>
+            <Search handleSubmit={this.handleSearchSubmit} handleChange={this.handleMoveItem}/>
           )} />
           <Route component={NotFound} />
         </Switch>

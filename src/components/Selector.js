@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 const Selector = props => {
   const { value, handleChange, options } = props;
   return (
-    <select value={value} onChange={handleChange}>
+    <select value={value} onChange={(event) => handleChange(event, value)}>
     {
       options.map(option => (
         <option key={option.value} value={option.value} disabled={option.disabled}>{option.title}</option>    

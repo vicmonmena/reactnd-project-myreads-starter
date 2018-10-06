@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import { get, update } from './../utils/BooksAPI';
+import { get } from './../utils/BooksAPI';
 import Selector from './Selector';
 /**
  * This is an specific type (books) of Option Selector component.
@@ -14,24 +14,24 @@ class BookSelector extends Component {
     value: 'none' // defaut value
   }
 
-  handleChange = event => {
-    // 1. Catch onChange event
-    // 2. Update selector based on value selected
-    // 3. Invoke update from BookAPI to move the book to the corresponding list.
+  handleChange = (event, from) => {
     event.preventDefault();
-    console.log(event.target.value)
+    const data = {
+      fromShelf: from,
+      toShelf: event.target.value,
+      book: this.props.book
+    }
+    // 2. Update selector based on value selected TODO: OPTIONAL
     this.setState({
-      value: event.target.value
+      value: data.toShelf
     })
-    update(this.props.book, event.target.value).then((book) => {
-      // TODO: show this message in a modal
-      console.log(`Book ${book.id} moved to ${book.shelf} list`)
-    })
+    // Invoke parent component to move the book to the corresponding list.
+    this.props.handleChange(data);
   }
 
   componentDidMount() {
     get(this.props.book.id).then((book)=> {
-      console.log(book);
+      // console.log(book);
       this.setState({
         value: book.shelf
       })
@@ -59,6 +59,7 @@ class BookSelector extends Component {
 
 BookSelector.propTypes = {
   book: PropTypes.object,
+  handleChange: PropTypes.func
 }
 
 export default BookSelector;

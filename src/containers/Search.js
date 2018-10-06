@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import SearchForm from './../components/SearchForm';
 import List from './../components/List'
 import { search } from './../utils/BooksAPI';
@@ -44,6 +45,7 @@ class Search extends Component {
 
   render() {
     const { query, booksFound } = this.state;
+    const { handleChange } = this.props;
     return(
       <div className="search-books">
         <div className="search-books-bar">
@@ -65,11 +67,15 @@ class Search extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <List title={"Books found for search: " + query} items={booksFound}/>
+          <List title={"Books found for search: " + query} items={booksFound} handleChange={handleChange}/>
         </div>
       </div>
     )
   }
+}
+
+Search.propTypes = {
+  handleChange: PropTypes.func
 }
 
 export default Search;

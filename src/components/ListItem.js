@@ -10,13 +10,13 @@ import BookSelector from './BookSelector'
  * TODO: aplicar a cover -> https://www.npmjs.com/package/react-remote-image para conocer el tamaño de la imagena ntes de cargarla
  */
 const ListItem = props => {
-  const { title, authors, imageLinks} = props.data;
+  const { title, authors, imageLinks } = props.data;
   const cover = imageLinks['smallThumbnail'] || imageLinks['thumbnail'] || '#';
   return (
     <div className="book">
       <div className="book-top">
         <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${cover})` }}></div>
-        <BookSelector book={props.data} />
+        <BookSelector book={props.data} handleChange={props.handleChange} />
       </div>
       <div className="book-title">{title || 'No title'}</div>
       {
@@ -35,6 +35,7 @@ const ListItem = props => {
 
 ListItem.propTypes = {
   data: PropTypes.object.isRequired,
+  handleChange: PropTypes.func
 }
 
 export default ListItem;

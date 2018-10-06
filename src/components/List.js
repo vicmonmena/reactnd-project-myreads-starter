@@ -9,7 +9,7 @@ import ListItem from './ListItem';
  * @returns 
  */
 const List = props => {
-  const { title, items } = props;
+  const { title, items, handleChange } = props;
   return (
     <div className="bookshelf">
       { (title) && title.length > 0 &&
@@ -21,7 +21,7 @@ const List = props => {
           (items) && items.length > 0 &&
           items.map(item => (
             <li key={'book-' + item.id}>
-              <ListItem data={item}/>
+              <ListItem data={item} handleChange={handleChange} />
             </li>
           ))
         }
@@ -38,6 +38,7 @@ const List = props => {
 ListItem.propTypes = {
   title: PropTypes.string,
   items: PropTypes.array,
+  handleChange: PropTypes.func,
 }
 
 export default List;

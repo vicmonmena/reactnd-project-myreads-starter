@@ -176,3 +176,27 @@ body, .app {
 .book-info-not-found {
   color: #999;
 }
+
+/*Book Details*/
+
+.book-modal {
+  width: 100%;
+  display: grid;
+  grid-template-areas: 'left right right right right';
+  grid-gap: 5px;
+  padding: 10px;
+}
+
+.book-grid-item {
+  padding: 20px;
+  text-align: center;
+}
+
+.book-modal-title,
+.book-modal-authors,
+.book-modal-description {
+  font-size: 1.0em;
+}
+.book-modal-authors {
+  color: #999;
+}

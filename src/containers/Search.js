@@ -2,14 +2,17 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import SearchForm from './../components/SearchForm';
-import List from './../components/List'
+import List from './../components/List';
 import { search } from './../utils/BooksAPI';
+import ModalContainer from './ModalContainer';
+import Modal from './../components/Modal';
 
 class Search extends Component {
 
   state = {
     query: '',
-    booksFound: []
+    booksFound: [],
+    modalVisible: false
   } 
   
   /**
@@ -28,19 +31,27 @@ class Search extends Component {
     search(query).then((books)=> {
       if ((books.error)) {
         // TODO: show this message in a modal
-        console.log('An error occurred searching for: ' + query)
-        this.setState({
-          query: query,
-          booksFound: books
-        })
-      } else {
-        console.log(books);
-        this.setState({
-          query: query,
-          booksFound: books
-        })
+        // console.log('An error occurred searching for: ' + query)
+        this.handleOpenModal();
       }
+      this.setState({
+        query: query,
+        booksFound: books
+      })
+      
     });
+  }
+
+  handleCloseModal = (event) => {
+    this.setState({
+      modalVisible: false,
+    })
+  }
+
+  handleOpenModal = () => {
+    this.setState({
+      modalVisible: true,
+    })
   }
 
   render() {
@@ -64,6 +75,14 @@ class Search extends Component {
               handleSubmit={this.handleSearchSubmit} 
               setRef={this.setInputRef}
             />
+              {
+                this.state.modalVisible &&
+                <ModalContainer>
+                  <Modal handleClick={this.handleCloseModal}>
+                    <h1>{`An error occurred searching for '${this.state.query}'`}</h1>
+                  </Modal>
+                </ModalContainer>
+              }
           </div>
         </div>
         <div className="search-books-results">

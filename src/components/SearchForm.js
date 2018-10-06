@@ -10,13 +10,18 @@ import PropTypes from 'prop-types';
 const SearchForm = props => {
   const { placeholder, handleSubmit, setRef } = props;
   return(
-    <form onSubmit={handleSubmit} className="Search">
-      <input 
-        type="text" 
-        placeholder={placeholder}
-        ref={setRef}
-      />
-    </form>
+    <div>
+      <form onSubmit={handleSubmit} className="Search">
+        <input 
+          type="text" 
+          placeholder={placeholder}
+          ref={setRef}
+        />
+      </form>
+      {
+        props.children
+      }
+    </div>
   );
 }
 

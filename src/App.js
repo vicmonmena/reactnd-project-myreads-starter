@@ -7,12 +7,15 @@ import { getAll, update } from './utils/BooksAPI';
 import List from './components/List';
 import Search from './containers/Search';
 import NotFound from './components/NotFound.js';
+import ModalContainer from './containers/ModalContainer'; 
+import Modal from './components/Modal';
 
 class BooksApp extends Component {
   state = {
     currentlyReading: [],
     wantToRead: [],
     read: [],
+    modalVisible: false
   }
 
   componentDidMount() {
@@ -40,18 +43,34 @@ class BooksApp extends Component {
           [fromShelf]: this.state[fromShelf].filter(item => item.id !== book.id),
           [toShelf]: this.state[toShelf].concat([book])
         })
+        this.handleOpenModal(`Now this book is in ${toShelf} list!`);
       } else if (fromShelf === 'none' && toShelf !== 'none') {  
         // (none -> *) Just PUSH book to corresponding list
         this.setState({
           [toShelf]: this.state[toShelf].concat([book])
         })
+        this.handleOpenModal(`Now this book is in ${toShelf} list!`);
       } else {  
         // (* -> none) Just POP book from corresponding list
         this.setState({
           [fromShelf]: this.state[fromShelf].filter(item => item.id !== book.id),
         })
+        this.handleOpenModal('Now this book is not in any list!');
       }
       // ¿none -> none?
+    })
+  }
+
+  handleCloseModal = (event) => {
+    this.setState({
+      modalVisible: false,
+    })
+  }
+
+  handleOpenModal = (text) => {
+    this.setState({
+      modalVisible: true,
+      modalText: text
     })
   }
 
@@ -108,7 +127,20 @@ class BooksApp extends Component {
             ******************************************* 
           */}
           <Route path='/search' render={({ history }) => (
-            <Search handleSubmit={this.handleSearchSubmit} handleChange={this.handleMoveItem}/>
+            <div>
+              <Search 
+                handleSubmit={this.handleSearchSubmit} 
+                handleChange={this.handleMoveItem}
+              />
+              {
+                this.state.modalVisible &&
+                <ModalContainer>
+                  <Modal handleClick={this.handleCloseModal}>
+                    <h3>{this.state.modalText}</h3>
+                  </Modal>
+                </ModalContainer>
+              }
+            </div>
           )} />
           <Route component={NotFound} />
         </Switch>

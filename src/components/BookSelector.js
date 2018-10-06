@@ -21,7 +21,7 @@ class BookSelector extends Component {
       toShelf: event.target.value,
       book: this.props.book
     }
-    // 2. Update selector based on value selected TODO: OPTIONAL
+    // 2. Update selector based on value selected
     this.setState({
       value: data.toShelf
     })

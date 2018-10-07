@@ -23,8 +23,13 @@ I've used this functionality previously to this course and I think is the most e
 
 - I couldn't find anything about this so I've decided to use [Lodash](https://lodash.com/)
 
-# About this version (1.1.0)
+# About this version (1.2.0)
 
+Now, we can see more details about books just clicking on them.
+
+There is an important change here: ListItem component now is Smart instead functional, in order to manage Modal state (visible/not visible).
+
+# About version 1.1.0
 This version just include a couple of simple components: `ModalContainer' and Modal uses toalerts about some action occurered in the application.
 
 ## ModalContainer 
